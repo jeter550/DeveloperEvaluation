@@ -1,6 +1,162 @@
 @Ambev.DeveloperEvaluation.WebApi_HostAddress = http://localhost:5119
+@UserId = 11111111-1111-1111-1111-111111111111
+@SaleId = 11111111-1111-1111-1111-111111111111
+@JwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJmZjNmOWU4Zi0xY2UxLTQyMzctOGZlZC05YTcyMzhhZTMyNDkiLCJ1bmlxdWVfbmFtZSI6IkFkbWluIiwicm9sZSI6IkFkbWluIiwibmJmIjoxNzc3MTcxNjgzLCJleHAiOjE3NzcyMDA0ODMsImlhdCI6MTc3NzE3MTY4M30._lp87dJtnj8YoAccZKZzkKVjevbUq97cV8CTfjFKHrg
 
-GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/weatherforecast/
+### Criar usuario para autenticacao
+POST {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Users
+Content-Type: application/json
 Accept: application/json
 
-###
+{
+  "username": "Admin",
+  "password": "Admin@123",
+  "phone": "11912345678",
+  "email": "admin@developerstore.com",
+  "status": 1,
+  "role": 3
+}
+
+### Autenticar usuario e copiar o token retornado para @JwtToken
+POST {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Auth
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@developerstore.com",
+  "password": "Admin@123"
+}
+
+### Buscar usuario por id com bearer token
+### Atualize @UserId com o data.id retornado no POST de criacao
+GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Users/{{UserId}}
+Authorization: Bearer {{JwtToken}}
+Accept: application/json
+
+### Criar venda com item sem desconto e item com 10%
+POST {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saleNumber": "SALE-20260425-001",
+  "saleDate": "2026-04-25T14:30:00Z",
+  "customerExternalId": "CUST-1001",
+  "customerName": "Maria Oliveira",
+  "branchExternalId": "BR-01",
+  "branchName": "Filial Centro",
+  "items": [
+    {
+      "productExternalId": "PROD-001",
+      "productName": "Cerveja Pilsen 350ml",
+      "quantity": 3,
+      "unitPrice": 5.50
+    },
+    {
+      "productExternalId": "PROD-002",
+      "productName": "Refrigerante Cola 2L",
+      "quantity": 4,
+      "unitPrice": 9.90
+    }
+  ]
+}
+
+### Criar venda com desconto de 20%
+POST {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saleNumber": "SALE-20260425-002",
+  "saleDate": "2026-04-25T15:00:00Z",
+  "customerExternalId": "CUST-1002",
+  "customerName": "Joao Santos",
+  "branchExternalId": "BR-02",
+  "branchName": "Filial Norte",
+  "items": [
+    {
+      "productExternalId": "PROD-003",
+      "productName": "Agua Mineral 500ml",
+      "quantity": 10,
+      "unitPrice": 2.50
+    }
+  ]
+}
+
+### Listar vendas
+GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales
+Authorization: Bearer {{JwtToken}}
+Accept: application/json
+
+### Buscar venda por id
+### Atualize @SaleId com o data.id retornado no POST
+GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales/{{SaleId}}
+Authorization: Bearer {{JwtToken}}
+Accept: application/json
+
+### Atualizar venda por id
+### Atualize @SaleId com o data.id retornado no POST
+PUT {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales/{{SaleId}}
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saleNumber": "SALE-20260425-001-UPDATED",
+  "saleDate": "2026-04-25T16:00:00Z",
+  "customerExternalId": "CUST-1001",
+  "customerName": "Maria Oliveira Atualizada",
+  "branchExternalId": "BR-01",
+  "branchName": "Filial Centro",
+  "isCancelled": false,
+  "items": [
+    {
+      "productExternalId": "PROD-001",
+      "productName": "Cerveja Pilsen 350ml",
+      "quantity": 5,
+      "unitPrice": 5.50,
+      "isCancelled": false
+    },
+    {
+      "productExternalId": "PROD-004",
+      "productName": "Suco Laranja 1L",
+      "quantity": 2,
+      "unitPrice": 7.00,
+      "isCancelled": false
+    }
+  ]
+}
+
+### Cancelar venda no update
+### Atualize @SaleId com o data.id retornado no POST
+PUT {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales/{{SaleId}}
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saleNumber": "SALE-20260425-001-UPDATED",
+  "saleDate": "2026-04-25T16:00:00Z",
+  "customerExternalId": "CUST-1001",
+  "customerName": "Maria Oliveira Atualizada",
+  "branchExternalId": "BR-01",
+  "branchName": "Filial Centro",
+  "isCancelled": true,
+  "items": [
+    {
+      "productExternalId": "PROD-001",
+      "productName": "Cerveja Pilsen 350ml",
+      "quantity": 5,
+      "unitPrice": 5.50,
+      "isCancelled": false
+    }
+  ]
+}
+
+### Excluir venda por id
+### Atualize @SaleId com o data.id retornado no POST
+DELETE {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales/{{SaleId}}
+Authorization: Bearer {{JwtToken}}
+Accept: application/json
