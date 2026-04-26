@@ -32,6 +32,7 @@ public class Sale : BaseEntity
         string branchName,
         IEnumerable<SaleItem> items)
     {
+        Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
         UpdateDetails(saleNumber, saleDate, customerExternalId, customerName, branchExternalId, branchName, items);
     }

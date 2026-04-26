@@ -20,6 +20,7 @@ public class SaleItem : BaseEntity
 
     public SaleItem(string productExternalId, string productName, int quantity, decimal unitPrice)
     {
+        Id = Guid.NewGuid();
         Update(productExternalId, productName, quantity, unitPrice);
     }
 
