@@ -85,6 +85,35 @@ Accept: application/json
   ]
 }
 
+### Criar venda com desconto de 20%
+POST {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales
+Authorization: Bearer {{JwtToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saleNumber": "SALE-20260425-003",
+  "saleDate": "2026-04-25T15:00:00Z",
+  "customerExternalId": "CUST-1002",
+  "customerName": "Joao Santos",
+  "branchExternalId": "BR-02",
+  "branchName": "Filial Norte",
+  "items": [
+    {
+      "productExternalId": "PROD-005",
+      "productName": "Sabonete",
+      "quantity": 10,
+      "unitPrice": 4.50
+    },
+    {
+      "productExternalId": "PROD-005",
+      "productName": "Refrigerante Guaraná 2L",
+      "quantity": 10,
+      "unitPrice": 7.50
+    }
+  ]
+}
+
 ### Listar vendas
 GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/api/Sales
 Authorization: Bearer {{JwtToken}}
